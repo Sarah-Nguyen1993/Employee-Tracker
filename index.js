@@ -35,18 +35,21 @@ function askMenu(){
     })
 };
 async function addDepartmentFlow(){
-    const {department} = await addDepartment();
+    const department = await addDepartment();
     await createDepartment(connection, department);
-    console.log(`${department} is added to the database.`)
+    console.log(`${department.name} is added to the database.`)
 };
-// async function addRoleFlow(){};
-// async function addEmployeeFlow(){};
 
 function addDepartment(){
     return inquirer.prompt({
         type: "input",
-        name: "department",
+        name: "name",
         message: "What department would you like to add?"
     })
 }
+// async function addRoleFlow(){
+// };
+// async function addEmployeeFlow(){};
+
+
 
