@@ -18,15 +18,13 @@ connection.connect(function(err) {
 });
 
 async function start(){
-    const answer = await menu();
-    console.log(answer)
-    if (answer.menu === "Add department"){
-        console.log(answer)
+    const {menu} = await askMenu();
+    if (menu === "Add department"){
         addDepartmentFlow();
     }
 }
 
-function menu(){
+function askMenu(){
     return inquirer.prompt({
         type: "list",
         name: "menu",
@@ -37,9 +35,9 @@ function menu(){
     })
 };
 async function addDepartmentFlow(){
-    const answer = await addDepartment();
-    //await createDepartment(conection, department);
-    console.log(`${answer.department} is added to the database.`)
+    const {department} = await addDepartment();
+    await createDepartment(connection, department);
+    console.log(`${department} is added to the database.`)
 };
 // async function addRoleFlow(){};
 // async function addEmployeeFlow(){};
