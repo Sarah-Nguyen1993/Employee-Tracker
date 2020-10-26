@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const {createDepartment, createRole, createEmployees} = require("./createNew");
-const {departmentList} = require ("./view")
+const {departmentList, employeeList} = require ("./view")
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -25,9 +25,9 @@ async function start(){
     else if (menu === "Add roles"){
         addRoleFlow();
     }
-    // else if (menu === "Add employees"){
-    //     addEmployeeFlow();
-    // }
+    else if (menu === "Add employees"){
+        addEmployeeFlow();
+    }
     else if (menu === "View department"){
         await viewDepartmentList();
     }
@@ -85,26 +85,38 @@ async function addRole(){
 
     ])
 }
-// async function addEmployeeFlow(){};
-// function addEmployee(){
-//     return inquirer.prompt([
-//         {
-//             type: "input",
-//             name:"first_name",
-//             message: "What is the employee's first name?"
-//         },
-//         {
-//             type: "input",
-//             name:"last_name",
-//             message: "What is the employee's last name?"
-//         },
-//         {
-//             type: "input",
-//             name:"title",
-//             message: "What is the employee's role?"
-//         },
-//     ])
-// }
+async function addEmployeeFlow(){
+    const answer = await addEmployee();
+    const {first_name, last_name, title} = answer;
+    await createEmployees(connection, first_name, last_name, title);
+    console.log(`${first_name} ${last_name} is added to the database.`)
+};
+async function addEmployee(){
+    const employees = await employeeList(connection);
+    return inquirer.prompt([
+        {
+            type: "input",
+            name:"first_name",
+            message: "What is the employee's first name?"
+        },
+        {
+            type: "input",
+            name:"last_name",
+            message: "What is the employee's last name?"
+        },
+        {
+            type: "input",
+            name:"title",
+            message: "What is the employee's role?"
+        },
+        {
+            type: "list",
+            name:"manager",
+            message: "Who does the role report to?",
+            choices: employees
+        },
+    ])
+}
 
 async function viewDepartmentList(){
     const departmentArray =  await departmentList(connection);

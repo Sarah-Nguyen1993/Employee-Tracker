@@ -1,0 +1,16 @@
+Ask the user what to do
+   Add departments
+      Question: what department?
+      UPDATE department SET where name = ?
+   
+   Add roles
+      Question: what role, first_name. last-name, what department, manager?
+      UPDATE role SET ? where
+   
+   ADD employees
+      Questions: first_name, last_name, role, salary, department, who is the manager?
+   
+   View departments, roles, employees
+   
+   Update employee roles
+      UPDATE employees SET ? WHERE title = ?
