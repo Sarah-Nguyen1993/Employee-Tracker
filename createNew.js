@@ -8,9 +8,10 @@ function createDepartment (connection, data){
     })
 };
 
-function createRole (connection, data){
+function createRole (connection, title,departmentName, salary){
     return new Promise((resolve, reject) => {
-        connection.query("INSERT INTO role SET ?", data, 
+       
+        connection.query("INSERT INTO role SET title =?, salary =?, department_id = SELECT id FROM department WHERE department.name = ?", [title, salary, departmentName], 
         function(err, data){
             if(err){ reject(err) }
             else { resolve(data) }
