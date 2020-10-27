@@ -111,18 +111,18 @@ function viewRoles(){
 // }
 
 async function updateEmployeeRole(){
-    console.log("fsa")
     const answer = await askForUpdateEmployeeRole(connection);
-    console.log(answer)
-    // return new Promise((resolve, reject) => {
-    //     connection.query("UPDATE employee SET WHERE role_id= ?",[role]
-    //         function (err, data) {
-    //             if (err) { reject(err) }
-    //             else {
-    //                 console.table(data)
-    //                 resolve(data);
-    //             }
-    //         });
-    // })
+    //since name is coded as id in employeeList, the answer gotten from askForUpdateEmployeeRole include employee id and role id
+    const {id, role_id} = answer;
+    return new Promise((resolve, reject) => {
+        connection.query("UPDATE employees SET role_id= ? WHERE id = ?",[role_id, id],
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    console.table(data)
+                    resolve(data);
+                }
+            });
+    });    
 }
 
