@@ -1,16 +1,8 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql");
 const employeeList = require("../dataList/employeeList");
 const roleList = require("../dataList/roleList");
 
-const connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "bootcampUT2020",
-    database: "employee_trackerBD"
-});
-async function askForEmployee(){
+async function askForEmployee(connection){
     return inquirer.prompt([
         {
             type: "input",
