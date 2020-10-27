@@ -1,12 +1,22 @@
 function departmentList(connection) {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT name FROM department",
+        connection.query("SELECT name, id as value FROM department",
             function (err, data) {
                 if (err) { reject(err) }
                 else {
                     resolve(data);
-                    const departmentList = [];
-                    data.map(element => departmentList.push(element.name));
+                }
+            });
+    })
+};
+
+function roleList(connection) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT title as name, id as value FROM role",
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    resolve(data);
                 }
             });
     })
@@ -15,15 +25,11 @@ function departmentList(connection) {
 
 function employeeList(connection) {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT first_name, last_name FROM employees",
+        connection.query("SELECT CONCAT(first_name,' ', last_name) as name, id as value FROM employees",
             function (err, data) {
                 if (err) { reject(err) }
                 else {
                     resolve(data);
-                    const employees = []
-                    data.map(person => employees.push(person.first_name + " " + person.last_name));
-                    //return (employees)
-                    console.log(employees)
                 }
             });
     })
@@ -33,5 +39,6 @@ function employeeList(connection) {
 
 module.exports = { 
     departmentList,
-    employeeList
+    employeeList,
+    roleList
 }

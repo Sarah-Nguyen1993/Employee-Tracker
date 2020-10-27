@@ -1,7 +1,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const {createDepartment, createRole, createEmployees} = require("./createNew");
-const {departmentList, employeeList} = require ("./view")
+const {departmentList, employeeList, roleList} = require ("./view")
+const askMenu = require("./askMenu")
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -33,16 +34,6 @@ async function start(){
     }
 }
 
-function askMenu(){
-    return inquirer.prompt({
-        type: "list",
-        name: "menu",
-        message: "What would you like to do?",
-        choices: ["Add department", "Add roles", "Add employees", 
-        "View department", "View Roles", "View employees",
-        "Update employee role"]
-    })
-};
 async function addDepartmentFlow(){
     const answer = await addDepartment();
     await createDepartment(connection, answer);
@@ -58,10 +49,9 @@ function addDepartment(){
 }
 async function addRoleFlow(){
     const answer = await addRole();
-    const {title, departmentName,salary} = answer;
-    console.log(title, departmentName,salary);
-    await createRole(connection, title, departmentName,salary);
-    console.log(`${title} is added to the database.`)
+    //console.log(title, departmentName,salary);
+    await createRole(connection, answer);
+    console.log(`${answer.title} is added to the database.`)
 };
 
 async function addRole(){
@@ -73,7 +63,7 @@ async function addRole(){
         },
         {
             type: "list",
-            name: "departmentName",
+            name: "department_id",
             message: "What department does the role belong to?",
             choices: await departmentList(connection)
         },
@@ -87,12 +77,12 @@ async function addRole(){
 }
 async function addEmployeeFlow(){
     const answer = await addEmployee();
-    const {first_name, last_name, title} = answer;
-    await createEmployees(connection, first_name, last_name, title);
-    console.log(`${first_name} ${last_name} is added to the database.`)
+    await createEmployees(connection, answer);
+    console.log(`${answer.first_name} ${answer.last_name} is added to the database.`)
 };
+
+
 async function addEmployee(){
-    const employees = await employeeList(connection);
     return inquirer.prompt([
         {
             type: "input",
@@ -105,15 +95,16 @@ async function addEmployee(){
             message: "What is the employee's last name?"
         },
         {
-            type: "input",
-            name:"title",
-            message: "What is the employee's role?"
+            type: "list",
+            name:"role_id",
+            message: "What is the employee's role?",
+            choices: await roleList(connection)
         },
         {
             type: "list",
-            name:"manager",
+            name:"manager_id",
             message: "Who does the role report to?",
-            choices: employees
+            choices: await employeeList(connection)
         },
     ])
 }
