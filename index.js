@@ -2,10 +2,10 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const {createDepartment, createRole, createEmployees} = require("./createNew");
 const departmentList = require("./dataList/departmentList");
-const askMenu = require("./askMenu");
-const askForRole = require("./askForRole");
-const askForDepartment = require("./askForDepartment");
-const askForEmployee = require("./askForEmployee");
+const askForMenu = require("./askFor/askForMenu");
+const askForRole = require("./askFor/askForRole");
+const askForDepartment = require("./askFor/askForDepartment");
+const askForEmployee = require("./askFor/askForEmployee");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -22,7 +22,7 @@ connection.connect(function(err) {
 });
 
 async function start(){
-    const {menu} = await askMenu();
+    const {menu} = await askForMenu();
     if (menu === "Add department"){
         addDepartment();
     }
@@ -44,13 +44,13 @@ async function addDepartment(){
 };
 
 async function addRole(){
-    const answer = await askForRole();
+    const answer = await askForRole(connection);
     await createRole(connection, answer);
     console.log(`${answer.title} is added to the database.`)
 };
 
 async function addEmployee(){
-    const answer = await askForEmployee();
+    const answer = await askForEmployee(connection);
     await createEmployees(connection, answer);
     console.log(`${answer.first_name} ${answer.last_name} is added to the database.`)
 };
