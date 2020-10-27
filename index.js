@@ -23,7 +23,7 @@ connection.connect(function(err) {
 
 async function start(){
     const {menu} = await askForMenu();
-    if (menu === "Add department"){
+    if (menu === "Add departments"){
         addDepartment();
     }
     else if (menu === "Add roles"){
@@ -32,8 +32,11 @@ async function start(){
     else if (menu === "Add employees"){
         addEmployee();
     }
-    else if (menu === "View department"){
-        await viewDepartmentList();
+    else if (menu === "View departments"){
+        await viewDepartments();
+    }
+    else if (menu === "View roles"){
+        await viewRoles();
     }
 }
 
@@ -55,19 +58,30 @@ async function addEmployee(){
     console.log(`${answer.first_name} ${answer.last_name} is added to the database.`)
 };
 
-async function viewDepartmentList(){
-    const departmentArray =  await departmentList(connection);
-    return inquirer.prompt( 
-        {
-            type:"list",
-            name: "departmentList",
-            message: "What department does the role belong to?",
-            choices: departmentArray
-        }
-    )
+function viewDepartments(){
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM department",
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    console.table(data)
+                    resolve(data);
+                }
+            });
+    })
 }
 
-
-
+function viewRoles(){
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT role.title, role.salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id ORDER BY salary DESC",
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    console.table(data)
+                    resolve(data);
+                }
+            });
+    })
+}
 
 
