@@ -3,7 +3,7 @@ const employeeList = require("../dataList/employeeList");
 const roleList = require("../dataList/roleList");
 
 async function askForUpdateEmployeeRole(connection){
-    return inquirer.prompt(
+    return inquirer.prompt([
         {
             type:"list",
             name:"name",
@@ -15,9 +15,8 @@ async function askForUpdateEmployeeRole(connection){
             name:"role_id",
             message:"What new role is the employee assigned to?",
             choices: await roleList(connection)
-        },
-       
-    )
+        }   
+    ])
 };
 
 module.exports = askForUpdateEmployeeRole;
