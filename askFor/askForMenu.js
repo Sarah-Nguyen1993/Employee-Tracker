@@ -4,8 +4,8 @@ function askMenu(){
         type: "list",
         name: "menu",
         message: "What would you like to do?",
-        choices: ["Add department", "Add roles", "Add employees", 
-        "View department", "View Roles", "View employees",
+        choices: ["Add departments", "Add roles", "Add employees", 
+        "View departments", "View roles", "View all employees",
         "Update employee role"]
     })
 };
