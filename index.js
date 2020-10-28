@@ -1,11 +1,11 @@
 const mysql = require("mysql");
-const inquirer = require("inquirer");
 const {createDepartment, createRole, createEmployees} = require("./createNew");
 const askForMenu = require("./askFor/askForMenu");
 const askForRole = require("./askFor/askForRole");
 const askForDepartment = require("./askFor/askForDepartment");
 const askForEmployee = require("./askFor/askForEmployee");
 const askForUpdateEmployeeRole = require("./askFor/askForUpdateEmployeeRole");
+//const managerList = require("./dataList/departmentList")
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -24,25 +24,33 @@ connection.connect(function(err) {
 async function start(){
     const {menu} = await askForMenu();
     if (menu === "Add departments"){
-        addDepartment();
+       await addDepartment();
+    //    await managerList(connection);
+       start();
     }
     else if (menu === "Add roles"){
-        addRole();
+        await addRole();
+        start();
     }
     else if (menu === "Add employees"){
-        addEmployee();
+        await addEmployee();
+        start();
     }
     else if (menu === "View departments"){
         await viewDepartments();
+        start();
     }
     else if (menu === "View roles"){
         await viewRoles();
+        start();
     }
-    // else if (menu === "View all employees"){
-    //     await viewAllEmployees();
-    // }
+    else if (menu === "View all employees"){
+        await viewAllEmployees();
+
+    }
     else if (menu === "Update employee role"){
-        await updateEmployeeRole();
+       await updateEmployeeRole();
+       start();
     }
 }
 
@@ -90,25 +98,26 @@ function viewRoles(){
     })
 }
 
-// function viewAllEmployees(){
-//     var query = "SELECT employees.id, employees.first_name, employees.last_name,"
-//     query += "role.title, department.name as department, role.salary, CONCAT(employee.first_name, ' ', employee.last_name) as manager employees.manager_id ";
-//     query += " FROM employees";
-//     query += " INNER JOIN role on employees.role_id = role.id";
-//     query += " INNER JOIN department on role.department_id = department.id";
-//     query += " LEFT JOIN employee AS manager on employee.manager_id = department.id";
-//     query += " ORDER BY salary DESC"
-//     return new Promise((resolve, reject) => {
-//         connection.query(query,
-//             function (err, data) {
-//                 if (err) { reject(err) }
-//                 else {
-//                     console.table(data)
-//                     resolve(data);
-//                 }
-//             });
-//     })
-// }
+function viewAllEmployees(){
+    var query = "SELECT E1.id, E1.first_name, E1.last_name,"
+    query += "role.title, department.name as department, role.salary,";
+    query += " CONCAT(E2.first_name,' ', E2.last_name) as manager";
+    query += " from employees E1";
+    query += " INNER JOIN role on E1.role_id = role.id";
+    query += " INNER JOIN department on role.department_id = department.id";
+    query += " LEFT JOIN employees E2 on E2.id = e1.manager_id";
+    query += " ORDER BY salary DESC"
+    return new Promise((resolve, reject) => {
+        connection.query(query,
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    console.table(data)
+                    resolve(data);
+                }
+            });
+    })
+}
 
 async function updateEmployeeRole(){
     const answer = await askForUpdateEmployeeRole(connection);
