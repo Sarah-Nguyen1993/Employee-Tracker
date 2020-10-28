@@ -13,7 +13,7 @@ async function askForUpdateEmployeeRole(connection){
         {
             type:"list",
             name:"role_id",
-            message:"What new role is the employee assigned to?",
+            message:"What is the new role of this employee?",
             choices: await roleList(connection)
         }   
     ])
