@@ -46,6 +46,7 @@ async function start(){
     }
     else if (menu === "View all employees"){
         await viewAllEmployees();
+        start();
 
     }
     else if (menu === "Update employee role"){
@@ -74,7 +75,7 @@ async function addEmployee(){
 
 function viewDepartments(){
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM department",
+        connection.query("SELECT id, name AS department FROM department",
             function (err, data) {
                 if (err) { reject(err) }
                 else {
@@ -103,8 +104,8 @@ function viewAllEmployees(){
     query += "role.title, department.name as department, role.salary,";
     query += " CONCAT(E2.first_name,' ', E2.last_name) as manager";
     query += " from employees E1";
-    query += " INNER JOIN role on E1.role_id = role.id";
-    query += " INNER JOIN department on role.department_id = department.id";
+    query += " LEFT JOIN role on E1.role_id = role.id";
+    query += " LEFT JOIN department on role.department_id = department.id";
     query += " LEFT JOIN employees E2 on E2.id = e1.manager_id";
     query += " ORDER BY salary DESC"
     return new Promise((resolve, reject) => {
@@ -128,7 +129,6 @@ async function updateEmployeeRole(){
             function (err, data) {
                 if (err) { reject(err) }
                 else {
-                    console.table(data)
                     resolve(data);
                 }
             });
