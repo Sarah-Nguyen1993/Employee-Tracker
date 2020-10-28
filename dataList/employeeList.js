@@ -4,6 +4,8 @@ function employeeList(connection) {
             function (err, data) {
                 if (err) { reject(err) }
                 else {
+                    let employees = data;
+                    employees.push({id: null, name: null});
                     resolve(data);
                 }
             });
