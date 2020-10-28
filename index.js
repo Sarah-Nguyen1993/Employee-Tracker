@@ -5,6 +5,7 @@ const askForRole = require("./askFor/askForRole");
 const askForDepartment = require("./askFor/askForDepartment");
 const askForEmployee = require("./askFor/askForEmployee");
 const askForUpdateEmployeeRole = require("./askFor/askForUpdateEmployeeRole");
+const askForEmployeeManagerUpdate = require("./askFor/askForEmployeeManagerUpdate");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -51,6 +52,10 @@ async function start(){
        await updateEmployeeRole();
        start();
     }
+    else if (menu === "Update employee manager"){
+        await updateEmployeeManager();
+        start();
+     }
 }
 
 async function addDepartment(){
@@ -133,3 +138,18 @@ async function updateEmployeeRole(){
     });    
 }
 
+async function updateEmployeeManager(){
+    const answer = await askForEmployeeManagerUpdate(connection)
+    const {employee_id, manager_id} = answer;
+    console.log(answer);
+    return new Promise((resolve, reject) => {
+        connection.query("UPDATE employees SET manager_id = ? WHERE id = ?",
+            [manager_id, employee_id],
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    resolve(data);
+                }
+            });
+    });    
+}
