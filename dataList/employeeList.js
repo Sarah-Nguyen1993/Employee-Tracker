@@ -5,7 +5,7 @@ function employeeList(connection) {
                 if (err) { reject(err) }
                 else {
                     let employees = data;
-                    employees.push({id: null, name: null});
+                    employees.push({name: "None", value: null});
                     resolve(data);
                 }
             });
