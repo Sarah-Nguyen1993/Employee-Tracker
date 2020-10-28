@@ -5,7 +5,6 @@ const askForRole = require("./askFor/askForRole");
 const askForDepartment = require("./askFor/askForDepartment");
 const askForEmployee = require("./askFor/askForEmployee");
 const askForUpdateEmployeeRole = require("./askFor/askForUpdateEmployeeRole");
-//const managerList = require("./dataList/departmentList")
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -25,7 +24,6 @@ async function start(){
     const {menu} = await askForMenu();
     if (menu === "Add departments"){
        await addDepartment();
-    //    await managerList(connection);
        start();
     }
     else if (menu === "Add roles"){
@@ -88,7 +86,7 @@ function viewDepartments(){
 
 function viewRoles(){
     return new Promise((resolve, reject) => {
-        connection.query("SELECT role.title, role.salary, department.name AS department FROM role LEFT JOIN department ON role.department_id = department.id ORDER BY salary DESC",
+        connection.query("SELECT role.id, role.title, role.salary, department.name AS department FROM role LEFT JOIN department ON role.department_id = department.id ORDER BY salary DESC",
             function (err, data) {
                 if (err) { reject(err) }
                 else {
@@ -104,8 +102,8 @@ function viewAllEmployees(){
     query += "role.title, department.name as department, role.salary,";
     query += " CONCAT(E2.first_name,' ', E2.last_name) as manager";
     query += " from employees E1";
-    query += " LEFT JOIN role on E1.role_id = role.id";
-    query += " LEFT JOIN department on role.department_id = department.id";
+    query += " INNER JOIN role on E1.role_id = role.id";
+    query += " INNER JOIN department on role.department_id = department.id";
     query += " LEFT JOIN employees E2 on E2.id = e1.manager_id";
     query += " ORDER BY salary DESC"
     return new Promise((resolve, reject) => {
@@ -122,10 +120,10 @@ function viewAllEmployees(){
 
 async function updateEmployeeRole(){
     const answer = await askForUpdateEmployeeRole(connection);
-    //since name is coded as id in employeeList, the answer gotten from askForUpdateEmployeeRole include employee id and role id
-    const {id, role_id} = answer;
     return new Promise((resolve, reject) => {
-        connection.query("UPDATE employees SET role_id= ? WHERE id = ?",[role_id, id],
+        const {role_id, newRole, department_id, salary}  = answer
+        connection.query("UPDATE role SET title = ?, department_id = ?, salary = ? WHERE id = ?",
+            [newRole, department_id, salary, role_id ],
             function (err, data) {
                 if (err) { reject(err) }
                 else {
