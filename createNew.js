@@ -1,4 +1,4 @@
-function createDepartment (connection, data){
+function createDepartment (connection, data){   
     return new Promise((resolve, reject) => {
         connection.query("INSERT INTO department SET ?", data, 
         function(err, data){
