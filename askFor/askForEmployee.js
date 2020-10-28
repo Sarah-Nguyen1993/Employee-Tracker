@@ -25,7 +25,7 @@ async function askForEmployee(connection){
             name:"manager_id",
             message: "Who does the role report to?",
             choices: await employeeList(connection)
-        },
+        }
     ])
 };
 
