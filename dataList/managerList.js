@@ -4,7 +4,8 @@ function managerList(connection) {
             function (err, data) {
                 if (err) {reject(err)} 
                 else {
-                    console.table(data)
+                    let managers = data;
+                    managers.push({name: "None", value: null});
                     resolve(data);
                 }
             });
