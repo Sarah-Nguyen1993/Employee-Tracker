@@ -197,15 +197,47 @@ async function viewEmployeesByManager(){
 async function deleteDepartment(){
     const answer = await askToDeleteDepartment(connection)
     const {department_id} = answer
+    console.log("Deleted department from the database")
     return new Promise((resolve, reject) => {
-        connection.query("DELETE FROM department WHERE ?",
+        connection.query("DELETE FROM department WHERE id =?",
             [department_id],
             function (err, data) {
                 if (err) { reject(err) }
                 else {
-                    console.table(data)
                     resolve(data);
                 }
             });
     });   
-}
+};
+
+async function deleteRole(){
+    const answer = await askToDeleteRole(connection)
+    const {role_id} = answer
+    console.log("Deleted role from the database")
+    return new Promise((resolve, reject) => {
+        connection.query("DELETE FROM role WHERE id =?",
+            [role_id],
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    resolve(data);
+                }
+            });
+    });   
+};
+
+async function deleteEmployee(){
+    const answer = await askToDeleteEmployee(connection)
+    const {employee_id} = answer
+    console.log("Deleted employee from the database")
+    return new Promise((resolve, reject) => {
+        connection.query("DELETE FROM employees WHERE id =?",
+            [employee_id],
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    resolve(data);
+                }
+            });
+    });   
+};
