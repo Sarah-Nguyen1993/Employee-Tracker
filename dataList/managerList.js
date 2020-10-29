@@ -1,6 +1,6 @@
 function managerList(connection) {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT CONCAT(first_name, ' ', last_name) as name FROM employees where manager_id is null",
+        connection.query("SELECT CONCAT(first_name, ' ', last_name) as name, id as value FROM employees where manager_id is null",
             function (err, data) {
                 if (err) {reject(err)} 
                 else {
