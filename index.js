@@ -6,7 +6,8 @@ const askForDepartment = require("./askFor/askForDepartment");
 const askForEmployee = require("./askFor/askForEmployee");
 const askForUpdateEmployeeRole = require("./askFor/askForUpdateEmployeeRole");
 const askForEmployeeManagerUpdate = require("./askFor/askForEmployeeManagerUpdate");
-const askToSeeEmployeeByManager = require("./askFor/askToSeeEmployeeByManager")
+const askToSeeEmployeeByManager = require("./askFor/askToSeeEmployeeByManager");
+const { askToDeleteDepartment, askToDeleteRole, askToDeleteEmployee } = require("./askFor/askToDelete");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -60,6 +61,21 @@ async function start(){
     else if(menu === "View employees by manager"){
         await viewEmployeesByManager();
         start();
+    }
+    else if(menu === "Delete department"){
+        await deleteDepartment();
+        start();
+    }
+    else if(menu === "Delete role"){
+        await deleteRole();
+        start();
+    }
+    else if(menu === "Delete employee"){
+        await deleteEmployee();
+        start();
+    }
+    else{
+        return;
     }
 }
 
@@ -178,3 +194,18 @@ async function viewEmployeesByManager(){
     });   
 };
 
+async function deleteDepartment(){
+    const answer = await askToDeleteDepartment(connection)
+    const {department_id} = answer
+    return new Promise((resolve, reject) => {
+        connection.query("DELETE FROM department WHERE ?",
+            [department_id],
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    console.table(data)
+                    resolve(data);
+                }
+            });
+    });   
+}
