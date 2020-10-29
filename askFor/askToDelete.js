@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const departmentList = require("../dataList/departmentList");
 const roleList = require("../dataList/roleList");
+const employeeList = require("../dataList/employeeList");
 
 async function askToDeleteDepartment(connection){
     const departmentOption = await departmentList(connection);
@@ -26,7 +27,7 @@ async function askToDeleteRole(connection){
     )
 };
 
-async function askToDeleteEmployee(){
+async function askToDeleteEmployee(connection){
     const employeeOption = await employeeList(connection);
     return inquirer.prompt(
         {
