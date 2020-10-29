@@ -6,6 +6,7 @@ const askForDepartment = require("./askFor/askForDepartment");
 const askForEmployee = require("./askFor/askForEmployee");
 const askForUpdateEmployeeRole = require("./askFor/askForUpdateEmployeeRole");
 const askForEmployeeManagerUpdate = require("./askFor/askForEmployeeManagerUpdate");
+const askToSeeEmployeeByManager = require("./askFor/askToSeeEmployeeByManager")
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -55,7 +56,11 @@ async function start(){
     else if (menu === "Update employee manager"){
         await updateEmployeeManager();
         start();
-     }
+    }
+    else if(menu === "View employees by manager"){
+        await viewEmployeesByManager();
+        start();
+    }
 }
 
 async function addDepartment(){
@@ -141,7 +146,6 @@ async function updateEmployeeRole(){
 async function updateEmployeeManager(){
     const answer = await askForEmployeeManagerUpdate(connection)
     const {employee_id, manager_id} = answer;
-    console.log(answer);
     return new Promise((resolve, reject) => {
         connection.query("UPDATE employees SET manager_id = ? WHERE id = ?",
             [manager_id, employee_id],
@@ -152,4 +156,25 @@ async function updateEmployeeManager(){
                 }
             });
     });    
-}
+};
+
+async function viewEmployeesByManager(){
+    const answer = await askToSeeEmployeeByManager(connection)
+    const {manager_id} = answer
+    return new Promise((resolve, reject) => {
+        let query = "SELECT CONCAT(first_name, ' ', last_name) AS name, title, name as department FROM employees";
+        query += " INNER JOIN role ON employees.role_id = role.id";
+        query += " INNER JOIN department on department.id = role.department_id"
+        query += " WHERE manager_id = ?";
+        connection.query(query,
+            [manager_id],
+            function (err, data) {
+                if (err) { reject(err) }
+                else {
+                    console.table(data)
+                    resolve(data);
+                }
+            });
+    });   
+};
+
