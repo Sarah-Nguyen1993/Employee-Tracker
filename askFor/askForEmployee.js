@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
-const employeeList = require("../dataList/employeeList");
 const roleList = require("../dataList/roleList");
+const managerList = require("../dataList/managerList");
 
 async function askForEmployee(connection){
     return inquirer.prompt([
@@ -24,7 +24,7 @@ async function askForEmployee(connection){
             type: "list",
             name:"manager_id",
             message: "Who does the role report to?",
-            choices: await employeeList(connection)
+            choices: await managerList(connection)
         }
     ])
 };
